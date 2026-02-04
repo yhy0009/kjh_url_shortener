@@ -1,4 +1,14 @@
 terraform {
+  cloud {
+    organization = "kjh_url_shortener"
+
+    workspaces {
+      name = "kjh_url_shortener"
+    }
+  }
+
+  required_version = ">= 1.5.0"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
