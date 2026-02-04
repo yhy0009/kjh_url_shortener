@@ -28,6 +28,7 @@ module "lambda" {
 
   shorten_zip_path  = "${path.module}/../lambda/shorten.zip"
   redirect_zip_path = "${path.module}/../lambda/redirect.zip"
+  stats_zip_path    = "${path.module}/../lambda/stats.zip"
 
   depends_on = [module.dynamodb, module.iam]
 }

@@ -22,3 +22,14 @@ output "redirect_invoke_arn" {
   value = aws_lambda_function.redirect.invoke_arn
 }
 
+output "stats_function_name" {
+  value = aws_lambda_function.stats.function_name
+}
+
+output "stats_function_arn" {
+  value = aws_lambda_function.stats.arn
+}
+
+output "stats_invoke_arn" {
+  value = aws_lambda_function.stats.invoke_arn
+}

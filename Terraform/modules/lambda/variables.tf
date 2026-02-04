@@ -34,3 +34,8 @@ variable "redirect_zip_path" {
   type        = string
   description = "Path to redirect lambda zip"
 }
+
+variable "stats_zip_path" {
+  type        = string
+  description = "Path to stats lambda zip"
+}
