@@ -28,6 +28,7 @@ module "lambda" {
 
   shorten_zip_path  = "${path.module}/../lambda/shorten.zip"
   redirect_zip_path = "${path.module}/../lambda/redirect.zip"
+  stats_zip_path    = "${path.module}/../lambda/stats.zip"
 
   depends_on = [module.dynamodb, module.iam]
 }
@@ -39,8 +40,12 @@ module "apigw" {
 
   shorten_invoke_arn     = module.lambda.shorten_invoke_arn
   shorten_function_name  = module.lambda.shorten_function_name
+
   redirect_invoke_arn    = module.lambda.redirect_invoke_arn
   redirect_function_name = module.lambda.redirect_function_name
+  
+  stats_invoke_arn       = module.lambda.stats_invoke_arn
+  stats_function_name    = module.lambda.stats_function_name
 
   depends_on = [module.lambda]
 }

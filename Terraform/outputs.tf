@@ -8,5 +8,5 @@ output "clicks_table_name" {
 
 output "api_endpoint" {
   description = "Base URL of HTTP API Gateway"
-  value = module.apigw.api_endpoint
+  value       = module.apigw.api_endpoint
 }
