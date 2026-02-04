@@ -51,6 +51,20 @@ resource "aws_apigatewayv2_route" "redirect" {
   target    = "integrations/${aws_apigatewayv2_integration.redirect.id}"
 }
 
+# -------- Stats (GET /stats/{shortId}) --------
+resource "aws_apigatewayv2_integration" "stats" {
+  api_id             = aws_apigatewayv2_api.api.id
+  integration_type   = "AWS_PROXY"
+  integration_uri    = var.stats_invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "stats" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "GET /stats/{shortId}"
+  target    = "integrations/${aws_apigatewayv2_integration.stats.id}"
+}
+
 # -------- Lambda Permissions --------
 resource "aws_lambda_permission" "shorten" {
   statement_id  = "AllowAPIGatewayInvokeShorten"
@@ -66,4 +80,12 @@ resource "aws_lambda_permission" "redirect" {
   function_name = var.redirect_function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*" # <-허용 권한이 넓은 테스트 후 수정 / source_arn = "${aws_apigatewayv2_api.api.execution_arn}/GET/*"
+}
+
+resource "aws_lambda_permission" "stats" {
+  statement_id  = "AllowAPIGatewayInvokeStats"
+  action        = "lambda:InvokeFunction"
+  function_name = var.stats_function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
 }

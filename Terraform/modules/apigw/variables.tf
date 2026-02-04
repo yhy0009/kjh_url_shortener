@@ -44,3 +44,13 @@ variable "cors_allow_headers" {
   type        = list(string)
   default     = ["Content-Type"]
 }
+
+variable "stats_invoke_arn" {
+  type        = string
+  description = "Invoke ARN of stats lambda"
+}
+
+variable "stats_function_name" {
+  type        = string
+  description = "Function name of stats lambda"
+}
