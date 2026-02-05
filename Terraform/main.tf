@@ -38,14 +38,34 @@ module "apigw" {
   project_name = var.project_name
   tags         = var.tags
 
-  shorten_invoke_arn     = module.lambda.shorten_invoke_arn
-  shorten_function_name  = module.lambda.shorten_function_name
+  shorten_invoke_arn    = module.lambda.shorten_invoke_arn
+  shorten_function_name = module.lambda.shorten_function_name
 
   redirect_invoke_arn    = module.lambda.redirect_invoke_arn
   redirect_function_name = module.lambda.redirect_function_name
-  
-  stats_invoke_arn       = module.lambda.stats_invoke_arn
-  stats_function_name    = module.lambda.stats_function_name
+
+  stats_invoke_arn    = module.lambda.stats_invoke_arn
+  stats_function_name = module.lambda.stats_function_name
+
 
   depends_on = [module.lambda]
+}
+
+module "monitoring" {
+  source       = "./modules/monitoring"
+  project_name = var.project_name
+  tags         = var.tags
+
+  log_retention_days = 14
+
+  lambda_function_names = [
+    module.lambda.shorten_function_name,
+    module.lambda.redirect_function_name,
+    module.lambda.stats_function_name
+  ]
+
+  api_gateway_id      = module.apigw.api_id
+  dynamodb_table_name = module.dynamodb.clicks_table_name
+
+  depends_on = [module.lambda, module.apigw]
 }
