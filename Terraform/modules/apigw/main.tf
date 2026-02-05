@@ -13,14 +13,35 @@ resource "aws_apigatewayv2_api" "api" {
   })
 }
 
+resource "aws_cloudwatch_log_group" "access" {
+  name              = "/aws/apigateway/${var.project_name}-http-api"
+  retention_in_days = 14
+
+  tags = merge(var.tags, {
+    Name = "${var.project_name}-apigw-access-log"
+  })
+}
+
 resource "aws_apigatewayv2_stage" "prod" {
   api_id      = aws_apigatewayv2_api.api.id
   name        = "prod"
   auto_deploy = true
 
-  tags = merge(var.tags, {
-    Name = "${var.project_name}-prod"
-  })
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.access.arn
+    format = jsonencode({
+      requestId  = "$context.requestId"
+      httpMethod = "$context.httpMethod"
+      routeKey   = "$context.routeKey"
+      status     = "$context.status"
+
+     responseLatency      = "$context.responseLatency"
+     integrationLatency   = "$context.integrationLatency"
+
+     responseLength       = "$context.responseLength"
+     
+    })
+  }
 }
 
 # -------- Shorten (POST /shorten) --------
@@ -71,7 +92,7 @@ resource "aws_lambda_permission" "shorten" {
   action        = "lambda:InvokeFunction"
   function_name = var.shorten_function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*" # <-허용 권한이 넓은 테스트 후 수정 / source_arn = "${aws_apigatewayv2_api.api.execution_arn}/POST/shorten"
+  source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*" # <-허용 권한이 넓음 테스트 후 수정 예정 / source_arn = "${aws_apigatewayv2_api.api.execution_arn}/POST/shorten"
 }
 
 resource "aws_lambda_permission" "redirect" {
@@ -79,7 +100,7 @@ resource "aws_lambda_permission" "redirect" {
   action        = "lambda:InvokeFunction"
   function_name = var.redirect_function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*" # <-허용 권한이 넓은 테스트 후 수정 / source_arn = "${aws_apigatewayv2_api.api.execution_arn}/GET/*"
+  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*" # <-허용 권한이 넓음 테스트 후 수정 예정 / source_arn = "${aws_apigatewayv2_api.api.execution_arn}/GET/*"
 }
 
 resource "aws_lambda_permission" "stats" {
