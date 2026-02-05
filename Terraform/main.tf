@@ -56,11 +56,15 @@ module "monitoring" {
   tags         = var.tags
 
   log_retention_days = 14
+
   lambda_function_names = [
     module.lambda.shorten_function_name,
     module.lambda.redirect_function_name,
     module.lambda.stats_function_name
   ]
 
-  depends_on = [module.lambda]
+  api_gateway_id       = module.apigw.api_id
+  dynamodb_table_name  = module.dynamodb.clicks_table_name
+
+  depends_on = [module.lambda, module.apigw]
 }

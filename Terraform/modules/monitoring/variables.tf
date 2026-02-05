@@ -16,3 +16,13 @@ variable "lambda_function_names" {
   type        = list(string)
   description = "Lambda function names to create log groups for"
 }
+
+variable "api_gateway_id" {
+  type        = string
+  description = "API Gateway ID (HTTP API)"
+}
+
+variable "dynamodb_table_name" {
+  type        = string
+  description = "DynamoDB table name for monitoring"
+}
