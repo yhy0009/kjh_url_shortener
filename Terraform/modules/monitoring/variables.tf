@@ -22,7 +22,23 @@ variable "api_gateway_id" {
   description = "API Gateway ID (HTTP API)"
 }
 
-variable "dynamodb_table_name" {
+# variable "dynamodb_table_name" {
+#   type        = string
+#   description = "DynamoDB table name for monitoring"
+# }
+
+variable "dashboard_name" {
   type        = string
-  description = "DynamoDB table name for monitoring"
+  description = "CloudWatch dashboard name"
+  default     = null
+}
+
+variable "urls_table_name" {
+  type        = string
+  description = "DynamoDB urls table name"
+}
+
+variable "clicks_table_name" {
+  type        = string
+  description = "DynamoDB clicks table name"
 }
