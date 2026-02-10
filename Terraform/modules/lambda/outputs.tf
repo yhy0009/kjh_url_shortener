@@ -33,3 +33,15 @@ output "stats_function_arn" {
 output "stats_invoke_arn" {
   value = aws_lambda_function.stats.invoke_arn
 }
+
+output "analyze_function_name" {
+  value = aws_lambda_function.analyze.function_name
+}
+
+output "analyze_function_arn" {
+  value = aws_lambda_function.analyze.arn
+}
+
+output "analyze_invoke_arn" {
+  value = aws_lambda_function.analyze.invoke_arn
+}
