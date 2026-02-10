@@ -24,6 +24,12 @@ variable "clicks_table_name" {
   description = "DynamoDB clicks table name"
 }
 
+variable "openai_api_key" {
+  type        = string
+  description = "OpenAI API key for analyze lambda"
+  sensitive   = true
+}
+
 # zip 경로를 루트에서 넘겨줌
 variable "shorten_zip_path" {
   type        = string
@@ -38,4 +44,9 @@ variable "redirect_zip_path" {
 variable "stats_zip_path" {
   type        = string
   description = "Path to stats lambda zip"
+}
+
+variable "analyze_zip_path" {
+  type        = string
+  description = "Path to analyze lambda zip"
 }

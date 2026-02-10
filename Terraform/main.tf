@@ -26,9 +26,12 @@ module "lambda" {
   urls_table_name   = module.dynamodb.urls_table_name
   clicks_table_name = module.dynamodb.clicks_table_name
 
-  shorten_zip_path  = "${path.module}/../lambda/shorten.zip"
-  redirect_zip_path = "${path.module}/../lambda/redirect.zip"
-  stats_zip_path    = "${path.module}/../lambda/stats.zip"
+  shorten_zip_path  = "${path.module}/../lambda/shorten/shorten.zip"
+  redirect_zip_path = "${path.module}/../lambda/redirect/redirect.zip"
+  stats_zip_path    = "${path.module}/../lambda/stats/stats.zip"
+  analyze_zip_path    = "${path.module}/../lambda/analyze/analyze.zip"
+
+  openai_api_key    = var.openai_api_key
 
   depends_on = [module.dynamodb, module.iam]
 }
