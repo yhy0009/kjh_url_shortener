@@ -4,13 +4,13 @@ import boto3
 import os
 from datetime import datetime, timedelta
 from collections import Counter
-import openai
+from openai import OpenAI
 
 dynamodb = boto3.resource('dynamodb')
 urls_table = dynamodb.Table(os.environ.get('URLS_TABLE', 'urls'))
 clicks_table = dynamodb.Table(os.environ.get('CLICKS_TABLE', 'clicks'))
 
-openai.api_key = os.environ.get('OPENAI_API_KEY')
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 def lambda_handler(event, context):
     """주기적으로 실행되어 트렌드 분석 (CloudWatch Events 트리거)"""
@@ -81,17 +81,16 @@ def analyze_with_ai(stats):
 3. 서비스 개선 제안
 
 간결하게 3-4문장으로 답변해주세요.
-"""
-    
+""".strip()
+
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=300
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=300,
+            temperature=0.5,
         )
-        return response.choices[0].message.content
+        return resp.choices[0].message.content
     except Exception as e:
         return f"AI 분석 실패: {str(e)}"
 

@@ -71,8 +71,7 @@ resource "aws_lambda_function" "analyze" {
   function_name = "${var.project_name}-analyze"
   role          = var.lambda_role_arn
   handler       = "handler.lambda_handler"
-  runtime       = "python3.11"
-  architectures = ["x86_64"]
+  runtime       = "python3.10"
   timeout       = 60
   memory_size   = 512
 
