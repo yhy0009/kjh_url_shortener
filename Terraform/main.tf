@@ -15,6 +15,7 @@ module "iam" {
 
   urls_table_arn   = module.dynamodb.urls_table_arn
   clicks_table_arn = module.dynamodb.clicks_table_arn
+  trends_table_arn = module.dynamodb.trends_table_arn
 }
 
 module "lambda" {
@@ -25,11 +26,13 @@ module "lambda" {
   lambda_role_arn   = module.iam.lambda_role_arn
   urls_table_name   = module.dynamodb.urls_table_name
   clicks_table_name = module.dynamodb.clicks_table_name
+  trends_table_name = module.dynamodb.trends_table_name
 
   shorten_zip_path  = "${path.module}/../lambda/shorten/shorten.zip"
   redirect_zip_path = "${path.module}/../lambda/redirect/redirect.zip"
   stats_zip_path    = "${path.module}/../lambda/stats/stats.zip"
-  analyze_zip_path    = "${path.module}/../lambda/analyze/analyze.zip"
+  analyze_zip_path  = "${path.module}/../lambda/analyze/analyze.zip"
+  trends_latest_zip_path = "${path.module}/../lambda/trends_latest/trends_latest.zip"
 
   openai_api_key    = var.openai_api_key
 
@@ -49,6 +52,9 @@ module "apigw" {
 
   stats_invoke_arn    = module.lambda.stats_invoke_arn
   stats_function_name = module.lambda.stats_function_name
+
+  trends_latest_invoke_arn      = module.lambda.trends_latest_invoke_arn
+  trends_latest_function_name   = module.lambda.trends_latest_function_name
 
 
   depends_on = [module.lambda]
@@ -74,6 +80,17 @@ module "monitoring" {
   depends_on = [module.lambda, module.apigw]
 }
 
+module "scheduler" {
+  source = "./modules/scheduler"
+
+  project_name = var.project_name
+  tags         = var.tags
+
+  lambda_function_name = module.lambda.analyze_function_name
+  lambda_function_arn  = module.lambda.analyze_function_arn
+
+  depends_on = [module.lambda]
+}
 
 # module "monitoring" {
 #   source       = "./modules/monitoring"

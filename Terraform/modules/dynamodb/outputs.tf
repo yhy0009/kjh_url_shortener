@@ -13,3 +13,11 @@ output "clicks_table_name" {
 output "clicks_table_arn" {
   value = aws_dynamodb_table.clicks.arn
 }
+
+output "trends_table_name" { 
+  value = aws_dynamodb_table.trends.name 
+}
+
+output "trends_table_arn"  { 
+  value = aws_dynamodb_table.trends.arn 
+}

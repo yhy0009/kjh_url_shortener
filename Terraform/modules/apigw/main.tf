@@ -86,6 +86,20 @@ resource "aws_apigatewayv2_route" "stats" {
   target    = "integrations/${aws_apigatewayv2_integration.stats.id}"
 }
 
+# -------- Stats (GET /trends/latest) --------
+resource "aws_apigatewayv2_integration" "trends_latest" {
+  api_id             = aws_apigatewayv2_api.api.id
+  integration_type   = "AWS_PROXY"
+  integration_uri    = var.trends_latest_invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "trends_latest" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "GET /trends/latest"
+  target    = "integrations/${aws_apigatewayv2_integration.trends_latest.id}"
+}
+
 # -------- Lambda Permissions --------
 resource "aws_lambda_permission" "shorten" {
   statement_id  = "AllowAPIGatewayInvokeShorten"
@@ -107,6 +121,14 @@ resource "aws_lambda_permission" "stats" {
   statement_id  = "AllowAPIGatewayInvokeStats"
   action        = "lambda:InvokeFunction"
   function_name = var.stats_function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "trends_latest" {
+  statement_id  = "AllowAPIGatewayTrendsLatest"
+  action        = "lambda:InvokeFunction"
+  function_name = var.trends_latest_function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
 }

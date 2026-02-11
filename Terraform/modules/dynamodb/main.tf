@@ -41,3 +41,23 @@ resource "aws_dynamodb_table" "clicks" {
     Name = "${var.project_name}-clicks"
   })
 }
+
+resource "aws_dynamodb_table" "trends" {
+  name         = "${var.project_name}-trends"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "period"
+  range_key    = "generatedAt"
+
+  attribute { 
+    name = "period" 
+    type = "S" 
+    }
+  attribute { 
+    name = "generatedAt"
+    type = "S" 
+    }
+
+  tags = merge(var.tags, {
+    Name = "${var.project_name}-trends"
+  })
+}
