@@ -15,6 +15,7 @@ module "iam" {
 
   urls_table_arn   = module.dynamodb.urls_table_arn
   clicks_table_arn = module.dynamodb.clicks_table_arn
+  trends_table_arn = module.dynamodb.trends_table_arn
 }
 
 module "lambda" {
@@ -25,6 +26,7 @@ module "lambda" {
   lambda_role_arn   = module.iam.lambda_role_arn
   urls_table_name   = module.dynamodb.urls_table_name
   clicks_table_name = module.dynamodb.clicks_table_name
+  trends_table_name = module.dynamodb.trends_table_name
 
   shorten_zip_path  = "${path.module}/../lambda/shorten/shorten.zip"
   redirect_zip_path = "${path.module}/../lambda/redirect/redirect.zip"
@@ -74,6 +76,17 @@ module "monitoring" {
   depends_on = [module.lambda, module.apigw]
 }
 
+module "scheduler" {
+  source = "./modules/scheduler"
+
+  project_name = var.project_name
+  tags         = var.tags
+
+  lambda_function_name = module.lambda.analyze_function_name
+  lambda_function_arn  = module.lambda.analyze_function_arn
+
+  depends_on = [module.lambda]
+}
 
 # module "monitoring" {
 #   source       = "./modules/monitoring"

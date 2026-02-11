@@ -9,6 +9,9 @@ from openai import OpenAI
 dynamodb = boto3.resource('dynamodb')
 urls_table = dynamodb.Table(os.environ.get('URLS_TABLE', 'urls'))
 clicks_table = dynamodb.Table(os.environ.get('CLICKS_TABLE', 'clicks'))
+trends_table = dynamodb.Table(os.environ.get('TRENDS_TABLE', 'trends'))
+PERIOD = os.environ.get("PERIOD", "1h")
+MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
@@ -20,6 +23,22 @@ def lambda_handler(event, context):
         
         # AI 분석
         insights = analyze_with_ai(stats)
+
+        # 분석 후 저장 코드
+        generated_at = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
+        item = {
+            "period": PERIOD,
+            "generatedAt": generated_at,
+            "stats": stats,
+            "insights": insights,
+            "model": MODEL,
+            "totalClicks": int(stats.get("totalClicks", 0)),
+            "totalUrls": int(stats.get("totalUrls", 0)),
+        }
+
+        trends_table.put_item(Item=item)
+        #----------------------------------
         
         return {
             'statusCode': 200,

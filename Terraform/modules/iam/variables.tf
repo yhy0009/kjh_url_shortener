@@ -18,3 +18,8 @@ variable "clicks_table_arn" {
   type        = string
   description = "ARN of clicks DynamoDB table"
 }
+
+variable "trends_table_arn" {
+  type        = string
+  description = "ARN of clicks DynamoDB table"
+}

@@ -82,7 +82,9 @@ resource "aws_lambda_function" "analyze" {
     variables = {
       URLS_TABLE   = var.urls_table_name
       CLICKS_TABLE = var.clicks_table_name
+      TRENDS_TABLE = var.trends_table_name
       OPENAI_API_KEY  = var.openai_api_key
+      PERIOD         = "1h"
     }
   }
 

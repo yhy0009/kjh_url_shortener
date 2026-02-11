@@ -24,6 +24,11 @@ variable "clicks_table_name" {
   description = "DynamoDB clicks table name"
 }
 
+variable "trends_table_name" {
+  type        = string
+  description = "DynamoDB trends table name"
+}
+
 variable "openai_api_key" {
   type        = string
   description = "OpenAI API key for analyze lambda"
