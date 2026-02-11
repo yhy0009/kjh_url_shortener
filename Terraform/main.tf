@@ -31,7 +31,8 @@ module "lambda" {
   shorten_zip_path  = "${path.module}/../lambda/shorten/shorten.zip"
   redirect_zip_path = "${path.module}/../lambda/redirect/redirect.zip"
   stats_zip_path    = "${path.module}/../lambda/stats/stats.zip"
-  analyze_zip_path    = "${path.module}/../lambda/analyze/analyze.zip"
+  analyze_zip_path  = "${path.module}/../lambda/analyze/analyze.zip"
+  trends_latest_zip_path = "${path.module}/../lambda/trends_latest/trends_latest.zip"
 
   openai_api_key    = var.openai_api_key
 
@@ -51,6 +52,9 @@ module "apigw" {
 
   stats_invoke_arn    = module.lambda.stats_invoke_arn
   stats_function_name = module.lambda.stats_function_name
+
+  trends_latest_invoke_arn      = module.lambda.trends_latest_invoke_arn
+  trends_latest_function_name   = module.lambda.trends_latest_function_name
 
 
   depends_on = [module.lambda]

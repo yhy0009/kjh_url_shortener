@@ -92,3 +92,26 @@ resource "aws_lambda_function" "analyze" {
     Name = "${var.project_name}-analyze"
   })
 }
+
+resource "aws_lambda_function" "trends_latest" {
+  filename         = var.trends_latest_zip_path
+  function_name    = "${var.project_name}-trends-latest"
+  role             = var.lambda_role_arn
+  handler          = "handler.lambda_handler"
+  runtime          = "python3.11"
+  timeout          = 10
+  memory_size      = 128
+
+  source_code_hash = filebase64sha256(var.trends_latest_zip_path)
+
+  environment {
+    variables = {
+      TRENDS_TABLE    = var.trends_table_name
+      DEFAULT_PERIOD  = "1h"
+    }
+  }
+
+  tags = merge(var.tags, { 
+    Name = "${var.project_name}-trends-latest" 
+  })
+}

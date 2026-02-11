@@ -54,3 +54,10 @@ variable "stats_function_name" {
   type        = string
   description = "Function name of stats lambda"
 }
+
+variable "trends_latest_invoke_arn" { 
+  type = string 
+}
+variable "trends_latest_function_name" { 
+  type = string 
+}

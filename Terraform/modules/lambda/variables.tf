@@ -55,3 +55,8 @@ variable "analyze_zip_path" {
   type        = string
   description = "Path to analyze lambda zip"
 }
+
+variable "trends_latest_zip_path" {
+  type        = string
+  description = "Path to trends_latest lambda zip"
+}
