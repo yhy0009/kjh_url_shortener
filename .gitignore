@@ -384,4 +384,7 @@ terraform.rc
 .history
 .ionide
 
+# macOS
+.DS_Store
+
 # End of https://www.toptal.com/developers/gitignore/api/python,terraform,visualstudiocode,node,git
