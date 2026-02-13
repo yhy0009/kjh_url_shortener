@@ -26,14 +26,13 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
 }
 
 /** Shorten a URL */
-export async function shortenUrl(
-  originalUrl: string
-): Promise<ShortenResponse> {
+export async function shortenUrl(originalUrl: string, title?: string): Promise<ShortenResponse> {
   return request<ShortenResponse>("/shorten", {
     method: "POST",
-    body: JSON.stringify({ originalUrl }),
+    body: JSON.stringify({ url: originalUrl, title }),
   });
 }
+
 
 /** Get statistics for a short URL */
 export async function getStats(shortId: string): Promise<StatsResponse> {
