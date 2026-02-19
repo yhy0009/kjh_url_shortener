@@ -10,3 +10,8 @@ output "api_endpoint" {
   description = "Base URL of HTTP API Gateway"
   value       = module.apigw.api_endpoint
 }
+
+output "front_endpoint" {
+  description = "front_endpoint"
+  value       = module.cloudfront.domain_name
+}

@@ -92,21 +92,26 @@ module "scheduler" {
   depends_on = [module.lambda]
 }
 
-# module "monitoring" {
-#   source       = "./modules/monitoring"
-#   project_name = var.project_name
-#   tags         = var.tags
+module "cloudfront" {
+  source             = "./modules/cloudfront"
+  project_name       = var.project_name
+  origin_domain_name = module.s3.bucket_regional_domain_name
+  tags               = var.tags
 
-#   log_retention_days = 14
+  # Next 정적 라우팅 (권장)
+  enable_spa_fallback = true
+}
 
-#   lambda_function_names = [
-#     module.lambda.shorten_function_name,
-#     module.lambda.redirect_function_name,
-#     module.lambda.stats_function_name
-#   ]
+module "s3" {
+  source      = "./modules/s3"
+  bucket_name = replace("${var.project_name}-frontend", "_", "-")
+  tags        = var.tags
 
-#   api_gateway_id      = module.apigw.api_id
-#   dynamodb_table_name = module.dynamodb.clicks_table_name
+  # 개발 중엔 true로 편하게, 운영은 false 권장
+  force_destroy     = true
+  enable_versioning = true
 
-#   depends_on = [module.lambda, module.apigw]
-# }
+  # CloudFront 만든 뒤에 연결 (나중에 추가)
+  attach_cloudfront_policy    = true
+  cloudfront_distribution_arn = module.cloudfront.distribution_arn
+}
