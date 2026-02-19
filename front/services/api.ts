@@ -41,5 +41,5 @@ export async function getStats(shortId: string): Promise<StatsResponse> {
 
 /** Get trend data for a given period */
 export async function getTrends(period: TrendPeriod): Promise<TrendsResponse> {
-  return request<TrendsResponse>(`/trends?period=${period}`);
+  return request<TrendsResponse>(`/trends/latest?period=${period}`);
 }

@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 import type { TrendPeriod } from "@/types";
 
 const periods: { value: TrendPeriod; label: string }[] = [
-  { value: "1h", label: "Last Hour" },
-  { value: "24h", label: "Last 24 Hours" },
-  { value: "7d", label: "Last 7 Days" },
+  // { value: "1h", label: "Last Hour" },
+  // { value: "24h", label: "Last 24 Hours" },
+  // { value: "7d", label: "Last 7 Days" },
 ];
 
 interface PeriodSelectorProps {
