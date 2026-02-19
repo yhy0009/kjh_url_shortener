@@ -15,3 +15,7 @@ output "front_endpoint" {
   description = "front_endpoint"
   value       = module.cloudfront.domain_name
 }
+
+output "ci_cd_role_arn" {
+  value = module.github_oidc_frontend.role_arn
+}

@@ -115,3 +115,13 @@ module "s3" {
   attach_cloudfront_policy    = true
   cloudfront_distribution_arn = module.cloudfront.distribution_arn
 }
+
+module "github_oidc_frontend" {
+  source = "./modules/iam_github_oidc"
+
+  project_name = var.project_name
+  repo         = "yhy0009/kjh_url_shortener" 
+
+  bucket_arn = module.s3.bucket_arn
+  cloudfront_distribution_arn = module.cloudfront.distribution_arn
+}
