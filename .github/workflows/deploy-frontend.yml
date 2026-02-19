@@ -36,7 +36,7 @@ jobs:
       - name: Build (Next export)
         run: npm run build
         env:
-          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
 
       - name: Configure AWS (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
