@@ -2,7 +2,7 @@ name: Deploy Frontend (S3 + CloudFront)
 
 on:
   push:
-    branches: [ "feat/cicd" ]
+    branches: [ "dev" ]
     paths:
       - "front/**"
       - ".github/workflows/deploy-frontend.yml"
