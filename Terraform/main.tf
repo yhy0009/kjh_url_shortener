@@ -27,6 +27,7 @@ module "lambda" {
   urls_table_name   = module.dynamodb.urls_table_name
   clicks_table_name = module.dynamodb.clicks_table_name
   trends_table_name = module.dynamodb.trends_table_name
+  BASE_URL = var.BASE_URL
 
   shorten_zip_path  = "${path.module}/../lambda/shorten/shorten.zip"
   redirect_zip_path = "${path.module}/../lambda/redirect/redirect.zip"
@@ -131,23 +132,30 @@ module "github_oidc_frontend" {
 module "route53" {
   source = "./modules/route53"
 
-  domain_name = "r53-kjh.shop"
+  domain_name = var.root_domain
   tags        = var.tags
 
   create_alias           = true
-  record_name            = "short"  # zone이 r53-kjh.shop 이면 short만 줘도 됨 (FQDN도 가능)
+  record_name            = "short" 
   cloudfront_domain_name = module.cloudfront.domain_name
   cloudfront_zone_id     = module.cloudfront.hosted_zone_id
 }
 
 module "acm_frontend" {
-  source = "./modules/acm_us_east_1"
+  source = "./modules/acm"
 
   providers = {
     aws = aws.us_east_1
   }
 
   domain_name = var.frontend_domain
+  zone_id     = module.route53.zone_id
+  tags        = var.tags
+}
+module "acm_redirect" {
+  source = "./modules/acm"
+
+  domain_name = "s.${var.root_domain}"   
   zone_id     = module.route53.zone_id
   tags        = var.tags
 }

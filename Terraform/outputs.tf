@@ -23,3 +23,7 @@ output "ci_cd_role_arn" {
 output "frontend_acm_certificate_arn" {
   value = module.acm_frontend.certificate_arn
 }
+
+output "redirect_acm_certificate_arn" {
+  value = module.acm_redirect.certificate_arn
+}
