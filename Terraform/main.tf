@@ -45,6 +45,9 @@ module "apigw" {
   project_name = var.project_name
   tags         = var.tags
 
+  redirect_domain          = "s.${var.root_domain}"
+  redirect_certificate_arn = module.acm_redirect.certificate_arn
+
   shorten_invoke_arn    = module.lambda.shorten_invoke_arn
   shorten_function_name = module.lambda.shorten_function_name
 
@@ -158,4 +161,16 @@ module "acm_redirect" {
   domain_name = "s.${var.root_domain}"   
   zone_id     = module.route53.zone_id
   tags        = var.tags
+}
+
+resource "aws_route53_record" "s_alias_a" {
+  zone_id = module.route53.zone_id
+  name    = "s"
+  type    = "A"
+
+  alias {
+    name                   = module.apigw.redirect_domain_target
+    zone_id                = module.apigw.redirect_domain_zone_id
+    evaluate_target_health = false
+  }
 }

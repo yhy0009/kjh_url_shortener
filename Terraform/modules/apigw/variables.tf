@@ -58,6 +58,15 @@ variable "stats_function_name" {
 variable "trends_latest_invoke_arn" { 
   type = string 
 }
+
 variable "trends_latest_function_name" { 
   type = string 
+}
+
+variable "redirect_domain" {
+  type = string
+}
+
+variable "redirect_certificate_arn" {
+  type = string
 }
