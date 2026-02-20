@@ -100,6 +100,8 @@ module "cloudfront" {
 
   # Next 정적 라우팅 (권장)
   enable_spa_fallback = true
+  aliases            = [var.frontend_domain]
+  acm_certificate_arn = module.acm_frontend.certificate_arn
 }
 
 module "s3" {
@@ -124,4 +126,28 @@ module "github_oidc_frontend" {
 
   bucket_arn = module.s3.bucket_arn
   cloudfront_distribution_arn = module.cloudfront.distribution_arn
+}
+
+module "route53" {
+  source = "./modules/route53"
+
+  domain_name = "r53-kjh.shop"
+  tags        = var.tags
+
+  create_alias           = true
+  record_name            = "short"  # zone이 r53-kjh.shop 이면 short만 줘도 됨 (FQDN도 가능)
+  cloudfront_domain_name = module.cloudfront.domain_name
+  cloudfront_zone_id     = module.cloudfront.hosted_zone_id
+}
+
+module "acm_frontend" {
+  source = "./modules/acm_us_east_1"
+
+  providers = {
+    aws = aws.us_east_1
+  }
+
+  domain_name = var.frontend_domain
+  zone_id     = module.route53.zone_id
+  tags        = var.tags
 }

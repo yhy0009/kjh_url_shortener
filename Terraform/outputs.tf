@@ -19,3 +19,7 @@ output "front_endpoint" {
 output "ci_cd_role_arn" {
   value = module.github_oidc_frontend.role_arn
 }
+
+output "frontend_acm_certificate_arn" {
+  value = module.acm_frontend.certificate_arn
+}
