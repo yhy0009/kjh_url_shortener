@@ -27,3 +27,7 @@ variable "frontend_domain" {
   type        = string
   description = "Custom domain to attach to CloudFront"
 }
+
+variable "BASE_URL" {
+  type    = string
+}

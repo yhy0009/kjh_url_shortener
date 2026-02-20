@@ -9,6 +9,11 @@ variable "tags" {
   default     = {}
 }
 
+variable "BASE_URL" {
+  type        = string
+  description = "BASE_URL"
+}
+
 variable "lambda_role_arn" {
   type        = string
   description = "IAM role ARN for Lambda execution"

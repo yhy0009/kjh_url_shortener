@@ -132,3 +132,19 @@ resource "aws_lambda_permission" "trends_latest" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
 }
+# -------도메인 이름------------ 
+resource "aws_apigatewayv2_domain_name" "redirect" {
+  domain_name = var.redirect_domain
+
+  domain_name_configuration {
+    certificate_arn = var.redirect_certificate_arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
+}
+
+resource "aws_apigatewayv2_api_mapping" "redirect_root" {
+  api_id      = aws_apigatewayv2_api.api.id
+  domain_name = aws_apigatewayv2_domain_name.redirect.id
+  stage       = aws_apigatewayv2_stage.prod.name
+}

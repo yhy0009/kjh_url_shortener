@@ -40,32 +40,38 @@ def lambda_handler(event, context):
         # base_url = os.environ.get('BASE_URL', 'https://your-api-id.execute-api.region.amazonaws.com/prod')
         # short_url = f"{base_url}/{short_id}"
         # 응답 (API Gateway 요청 정보를 이용해 현재 도메인으로 조립)
-        headers = event.get("headers") or {}
-        # 1) proto
-        proto = (
-            headers.get("x-forwarded-proto")
-            or headers.get("X-Forwarded-Proto")
-            or "https"
-        )
+        # headers = event.get("headers") or {}
+        # # 1) proto
+        # proto = (
+        #     headers.get("x-forwarded-proto")
+        #     or headers.get("X-Forwarded-Proto")
+        #     or "https"
+        # )
 
-        # 2) host: headers보다 requestContext.domainName이 더 확실함 (HTTP API v2)
-        rc = event.get("requestContext") or {}
-        host = (
-            headers.get("x-forwarded-host")
-            or headers.get("X-Forwarded-Host")
-            or headers.get("host")
-            or headers.get("Host")
-            or rc.get("domainName")
-        )
+        # # 2) host: headers보다 requestContext.domainName이 더 확실함 (HTTP API v2)
+        # rc = event.get("requestContext") or {}
+        # host = (
+        #     headers.get("x-forwarded-host")
+        #     or headers.get("X-Forwarded-Host")
+        #     or headers.get("host")
+        #     or headers.get("Host")
+        #     or rc.get("domainName")
+        # )
 
-        # 3) stage
-        stage = rc.get("stage", "")
-        stage_prefix = f"/{stage}" if stage and stage != "$default" else ""
+        # # 3) stage
+        # stage = rc.get("stage", "")
+        # stage_prefix = f"/{stage}" if stage and stage != "$default" else ""
 
-        if not host:
-            return create_response(500, {"error": "Could not determine base URL (missing host)"})
+        # if not host:
+        #     return create_response(500, {"error": "Could not determine base URL (missing host)"})
 
-        base_url = f"{proto}://{host}{stage_prefix}"
+        # base_url = f"{proto}://{host}{stage_prefix}"
+        # short_url = f"{base_url}/{short_id}"
+        # ✅ 항상 커스텀 도메인으로 만들기 (환경변수 BASE_URL 사용)
+        base_url = os.environ.get("BASE_URL", "").rstrip("/")
+        if not base_url:
+            return create_response(500, {"error": "BASE_URL is not set"})
+
         short_url = f"{base_url}/{short_id}"
 
 

@@ -27,6 +27,7 @@ module "lambda" {
   urls_table_name   = module.dynamodb.urls_table_name
   clicks_table_name = module.dynamodb.clicks_table_name
   trends_table_name = module.dynamodb.trends_table_name
+  BASE_URL = var.BASE_URL
 
   shorten_zip_path  = "${path.module}/../lambda/shorten/shorten.zip"
   redirect_zip_path = "${path.module}/../lambda/redirect/redirect.zip"
@@ -43,6 +44,9 @@ module "apigw" {
   source       = "./modules/apigw"
   project_name = var.project_name
   tags         = var.tags
+
+  redirect_domain          = "s.${var.root_domain}"
+  redirect_certificate_arn = module.acm_redirect.certificate_arn
 
   shorten_invoke_arn    = module.lambda.shorten_invoke_arn
   shorten_function_name = module.lambda.shorten_function_name
@@ -131,17 +135,17 @@ module "github_oidc_frontend" {
 module "route53" {
   source = "./modules/route53"
 
-  domain_name = "r53-kjh.shop"
+  domain_name = var.root_domain
   tags        = var.tags
 
   create_alias           = true
-  record_name            = "short"  # zone이 r53-kjh.shop 이면 short만 줘도 됨 (FQDN도 가능)
+  record_name            = "short" 
   cloudfront_domain_name = module.cloudfront.domain_name
   cloudfront_zone_id     = module.cloudfront.hosted_zone_id
 }
 
 module "acm_frontend" {
-  source = "./modules/acm_us_east_1"
+  source = "./modules/acm"
 
   providers = {
     aws = aws.us_east_1
@@ -150,4 +154,23 @@ module "acm_frontend" {
   domain_name = var.frontend_domain
   zone_id     = module.route53.zone_id
   tags        = var.tags
+}
+module "acm_redirect" {
+  source = "./modules/acm"
+
+  domain_name = "s.${var.root_domain}"   
+  zone_id     = module.route53.zone_id
+  tags        = var.tags
+}
+
+resource "aws_route53_record" "s_alias_a" {
+  zone_id = module.route53.zone_id
+  name    = "s"
+  type    = "A"
+
+  alias {
+    name                   = module.apigw.redirect_domain_target
+    zone_id                = module.apigw.redirect_domain_zone_id
+    evaluate_target_health = false
+  }
 }

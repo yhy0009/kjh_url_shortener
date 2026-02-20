@@ -12,6 +12,7 @@ resource "aws_lambda_function" "shorten" {
   environment {
     variables = {
       URLS_TABLE = var.urls_table_name
+      BASE_URL   = var.BASE_URL
     }
   }
 
