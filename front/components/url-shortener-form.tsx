@@ -22,42 +22,35 @@ export function UrlShortenerForm() {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      setError(null);
-      setResult(null);
+const handleSubmit = useCallback(
+  async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setResult(null);
 
-      // Basic URL validation
-      if (!url.trim()) {
-        setError("Please enter a URL.");
-        return;
-      }
+    if (!url.trim()) {
+      setError("Please enter a URL.");
+      return;
+    }
 
-      try {
-        new URL(url);
-      } catch {
-        setError("Please enter a valid URL (e.g. https://example.com).");
-        return;
-      }
+    setIsLoading(true);
+    try {
+      const data = await shortenUrl(url); // ✅ services에서 normalize+validation
+      setResult(data);
+      setUrl("");
+      toast.success("URL shortened successfully!");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to shorten URL.";
+      setError(message);
+      toast.error("Failed to shorten URL.");
+    } finally {
+      setIsLoading(false);
+    }
+  },
+  [url]
+);
 
-      setIsLoading(true);
-      try {
-        const data = await shortenUrl(url);
-        setResult(data);
-        setUrl("");
-        toast.success("URL shortened successfully!");
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Failed to shorten URL.";
-        setError(message);
-        toast.error("Failed to shorten URL.");
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [url]
-  );
 
   const handleCopy = useCallback(async () => {
     if (!result) return;
@@ -90,7 +83,7 @@ export function UrlShortenerForm() {
               <div className="relative flex-1">
                 <Link2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  type="url"
+                  type="text"
                   placeholder="https://example.com/very/long/url..."
                   value={url}
                   onChange={(e) => {
