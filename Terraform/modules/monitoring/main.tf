@@ -77,22 +77,6 @@ resource "aws_cloudwatch_metric_alarm" "apigw_4xx" {
   }
 }
 
-# resource "aws_cloudwatch_metric_alarm" "dynamodb_rcu" {
-#   alarm_name          = "dynamodb-consumed-rcu"
-#   comparison_operator = "GreaterThanThreshold"
-#   evaluation_periods  = 1
-#   metric_name         = "ConsumedReadCapacityUnits"
-#   namespace           = "AWS/DynamoDB"
-#   period              = 60
-#   statistic           = "Sum"
-#   threshold           = 1000
-#   alarm_description   = "DynamoDB RCU usage spike"
-
-#   dimensions = {
-#     TableName = var.dynamodb_table_name
-#   }
-# }
-
 resource "aws_cloudwatch_metric_alarm" "dynamodb_rcu_urls" {
   alarm_name          = "dynamodb-urls-consumed-rcu"
   comparison_operator = "GreaterThanThreshold"
@@ -122,6 +106,22 @@ resource "aws_cloudwatch_metric_alarm" "dynamodb_rcu_clicks" {
 
   dimensions = {
     TableName = var.clicks_table_name
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "dynamodb_rcu_trends" {
+  alarm_name          = "dynamodb-trends-consumed-rcu"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  metric_name         = "ConsumedReadCapacityUnits"
+  namespace           = "AWS/DynamoDB"
+  period              = 60
+  statistic           = "Sum"
+  threshold           = 1000
+  alarm_description   = "DynamoDB clicks RCU usage spike"
+
+  dimensions = {
+    TableName = var.trends_table_name
   }
 }
 
@@ -270,6 +270,24 @@ resource "aws_cloudwatch_dashboard" "main" {
           metrics = [
             ["AWS/DynamoDB", "ConsumedReadCapacityUnits", "TableName", var.clicks_table_name],
             ["AWS/DynamoDB", "ConsumedWriteCapacityUnits", "TableName", var.clicks_table_name]
+          ]
+        }
+      },
+      # ---------- DynamoDB: trends RCU/WCU ----------
+      {
+        type   = "metric"
+        x      = 12
+        y      = 18
+        width  = 12
+        height = 6
+        properties = {
+          region = data.aws_region.current.name
+          title  = "DynamoDB trends RCU/WCU (Sum, 1m)"
+          period = 60
+          stat   = "Sum"
+          metrics = [
+            ["AWS/DynamoDB", "ConsumedReadCapacityUnits", "TableName", var.trends_table_name],
+            ["AWS/DynamoDB", "ConsumedWriteCapacityUnits", "TableName", var.trends_table_name]
           ]
         }
       }
