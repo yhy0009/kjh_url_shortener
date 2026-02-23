@@ -22,11 +22,6 @@ variable "api_gateway_id" {
   description = "API Gateway ID (HTTP API)"
 }
 
-# variable "dynamodb_table_name" {
-#   type        = string
-#   description = "DynamoDB table name for monitoring"
-# }
-
 variable "dashboard_name" {
   type        = string
   description = "CloudWatch dashboard name"
@@ -42,3 +37,9 @@ variable "clicks_table_name" {
   type        = string
   description = "DynamoDB clicks table name"
 }
+
+variable "trends_table_name" {
+  type        = string
+  description = "DynamoDB trends table name"
+}
+

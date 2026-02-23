@@ -74,12 +74,16 @@ module "monitoring" {
   lambda_function_names = [
     module.lambda.shorten_function_name,
     module.lambda.redirect_function_name,
-    module.lambda.stats_function_name
+    module.lambda.stats_function_name,
+    module.lambda.analyze_function_name,
+    module.lambda.trends_latest_function_name
   ]
 
   api_gateway_id    = module.apigw.api_id
   urls_table_name   = module.dynamodb.urls_table_name
   clicks_table_name = module.dynamodb.clicks_table_name
+  trends_table_name = module.dynamodb.trends_table_name
+
 
   depends_on = [module.lambda, module.apigw]
 }
