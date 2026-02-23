@@ -4,9 +4,48 @@ import boto3
 import uuid
 import os
 from datetime import datetime
+from urllib.parse import urlparse
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ.get('URLS_TABLE', 'urls'))
+
+
+def is_valid_url(url: str) -> bool:
+    try:
+        parsed = urlparse(url)
+
+        # 스킴 검사
+        if parsed.scheme not in ("http", "https"):
+            return False
+
+        # 호스트 존재 검사
+        if not parsed.netloc:
+            return False
+
+        host = parsed.hostname or ""
+
+        # localhost 허용 여부 (원하면 False로 변경)
+        if host == "localhost":
+            return True
+
+        # 도메인에 점(.) 포함 필수
+        if "." not in host:
+            return False
+
+        # TLD 최소 2글자
+        tld = host.split(".")[-1]
+        if len(tld) < 2:
+            return False
+
+        # 이상한 문자 방지
+        if "_" in host or " " in host:
+            return False
+
+        return True
+
+    except Exception:
+        return False
+
 
 def lambda_handler(event, context):
     try:
@@ -18,8 +57,8 @@ def lambda_handler(event, context):
         # URL 유효성 검사
         if not original_url:
             return create_response(400, {'error': 'URL is required'})
-        
-        if not original_url.startswith(('http://', 'https://')):
+
+        if not is_valid_url(original_url):
             return create_response(400, {'error': 'Invalid URL format'})
         
         # 단축 코드 생성 (UUID 앞 8자리)
@@ -37,36 +76,6 @@ def lambda_handler(event, context):
         table.put_item(Item=item)
         
         # 응답
-        # base_url = os.environ.get('BASE_URL', 'https://your-api-id.execute-api.region.amazonaws.com/prod')
-        # short_url = f"{base_url}/{short_id}"
-        # 응답 (API Gateway 요청 정보를 이용해 현재 도메인으로 조립)
-        # headers = event.get("headers") or {}
-        # # 1) proto
-        # proto = (
-        #     headers.get("x-forwarded-proto")
-        #     or headers.get("X-Forwarded-Proto")
-        #     or "https"
-        # )
-
-        # # 2) host: headers보다 requestContext.domainName이 더 확실함 (HTTP API v2)
-        # rc = event.get("requestContext") or {}
-        # host = (
-        #     headers.get("x-forwarded-host")
-        #     or headers.get("X-Forwarded-Host")
-        #     or headers.get("host")
-        #     or headers.get("Host")
-        #     or rc.get("domainName")
-        # )
-
-        # # 3) stage
-        # stage = rc.get("stage", "")
-        # stage_prefix = f"/{stage}" if stage and stage != "$default" else ""
-
-        # if not host:
-        #     return create_response(500, {"error": "Could not determine base URL (missing host)"})
-
-        # base_url = f"{proto}://{host}{stage_prefix}"
-        # short_url = f"{base_url}/{short_id}"
         # ✅ 항상 커스텀 도메인으로 만들기 (환경변수 BASE_URL 사용)
         base_url = os.environ.get("BASE_URL", "").rstrip("/")
         if not base_url:
@@ -74,11 +83,6 @@ def lambda_handler(event, context):
 
         short_url = f"{base_url}/{short_id}"
 
-
-        
-
-        
-        
         return create_response(200, {
             'shortId': short_id,
             'shortUrl': short_url,
