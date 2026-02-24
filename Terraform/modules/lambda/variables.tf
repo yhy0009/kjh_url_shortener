@@ -65,3 +65,8 @@ variable "trends_latest_zip_path" {
   type        = string
   description = "Path to trends_latest lambda zip"
 }
+
+variable "categorize_zip_path" {
+  description = "Path to categorize lambda zip file"
+  type        = string
+}

@@ -116,3 +116,30 @@ resource "aws_lambda_function" "trends_latest" {
     Name = "${var.project_name}-trends-latest" 
   })
 }
+
+resource "aws_lambda_function" "categorize" {
+  filename      = var.categorize_zip_path
+  function_name = "${var.project_name}-categorize"
+  role          = var.lambda_role_arn
+  handler       = "handler.lambda_handler"
+  runtime       = "python3.10"
+  timeout       = 120              # LLM 호출 있으니 analyze보다 길게
+  memory_size   = 512
+
+  # zip 변경 감지
+  source_code_hash = filebase64sha256(var.categorize_zip_path)
+
+  environment {
+    variables = {
+      URLS_TABLE        = var.urls_table_name
+      OPENAI_API_KEY    = var.openai_api_key
+      CATEGORIZE_LIMIT  = "50"
+      LLM_BATCH_SIZE    = "15"
+    }
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.project_name}-categorize"
+  })
+}
+
