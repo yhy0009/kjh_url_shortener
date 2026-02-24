@@ -42,7 +42,7 @@ variable "cors_allow_methods" {
 
 variable "cors_allow_headers" {
   type        = list(string)
-  default     = ["Content-Type"]
+  default     = ["*"]
 }
 
 variable "stats_invoke_arn" {
