@@ -34,6 +34,8 @@ module "lambda" {
   stats_zip_path    = "${path.module}/../lambda/stats/stats.zip"
   analyze_zip_path  = "${path.module}/../lambda/analyze/analyze.zip"
   trends_latest_zip_path = "${path.module}/../lambda/trends_latest/trends_latest.zip"
+  categorize_zip_path = "${path.module}/../lambda/categorize/categorize.zip"
+
 
   openai_api_key    = var.openai_api_key
 
@@ -94,11 +96,15 @@ module "scheduler" {
   project_name = var.project_name
   tags         = var.tags
 
-  lambda_function_name = module.lambda.analyze_function_name
-  lambda_function_arn  = module.lambda.analyze_function_arn
+  analyze_lambda_function_name     = module.lambda.analyze_function_name
+  analyze_lambda_function_arn      = module.lambda.analyze_function_arn
+
+  categorize_lambda_function_name  = module.lambda.categorize_function_name
+  categorize_lambda_function_arn   = module.lambda.categorize_function_arn
 
   depends_on = [module.lambda]
 }
+
 
 module "cloudfront" {
   source             = "./modules/cloudfront"

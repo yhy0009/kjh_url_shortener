@@ -49,9 +49,20 @@ output "analyze_invoke_arn" {
 output "trends_latest_function_name" { 
   value = aws_lambda_function.trends_latest.function_name 
 }
+
 output "trends_latest_function_arn"  { 
   value = aws_lambda_function.trends_latest.arn 
 }
+
 output "trends_latest_invoke_arn"    { 
   value = aws_lambda_function.trends_latest.invoke_arn 
 }
+
+output "categorize_function_name" {
+  value = aws_lambda_function.categorize.function_name
+}
+
+output "categorize_function_arn" {
+  value = aws_lambda_function.categorize.arn
+}
+
