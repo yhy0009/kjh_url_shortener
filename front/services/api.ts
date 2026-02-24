@@ -87,6 +87,21 @@ export async function getStats(shortId: string): Promise<StatsResponse> {
 }
 
 /** Get trend data for a given period */
-export async function getTrends(period: TrendPeriod): Promise<TrendsResponse> {
-  return request<TrendsResponse>(`/trends/latest?period=${period}`);
+// export async function getTrends(period: TrendPeriod): Promise<TrendsResponse> {
+//   return request<TrendsResponse>(`/trends/latest?period=${period}`);
+// }
+
+export async function getTrends(
+  period: TrendPeriod,
+  view: "user" | "admin"
+) {
+  const url = `${API_BASE}/trends/latest?period=${period}&view=${view}`;
+  const res = await fetch(url, { cache: "no-store" });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Failed to load trends (${res.status}): ${text}`);
+  }
+
+  return (await res.json()) as TrendsResponse;
 }
