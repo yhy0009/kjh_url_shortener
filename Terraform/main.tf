@@ -78,7 +78,8 @@ module "monitoring" {
     module.lambda.redirect_function_name,
     module.lambda.stats_function_name,
     module.lambda.analyze_function_name,
-    module.lambda.trends_latest_function_name
+    module.lambda.trends_latest_function_name,
+    module.lambda.categorize_function_name
   ]
 
   api_gateway_id    = module.apigw.api_id
