@@ -86,7 +86,7 @@ def lambda_handler(event, context):
             "period": PERIOD,
             "generatedAt": generated_at,
             "stats": stats,
-            "insights": insights,           # ✅ 구조화 저장
+            "insights": insights,           # 구조화 저장
             "model": MODEL,
             "totalClicks": _safe_int(stats.get("totalClicks", 0)),
             "totalUrls": _safe_int(stats.get("totalUrls", 0)),
@@ -125,7 +125,7 @@ def collect_weekly_stats():
     domains = [extract_domain(u.get("originalUrl", "")) for u in urls]
     domain_counts = Counter(domains).most_common(10)
 
-    # ✅ 카테고리 집계 (urls_table에 category가 있다고 가정, 없으면 unknown)
+    # 카테고리 집계 (urls_table에 category가 있다고 가정, 없으면 unknown)
     categories = [(u.get("category") or u.get("cat") or "unknown") for u in urls]
     category_counts = Counter(categories).most_common(10)
 
@@ -172,7 +172,7 @@ def collect_weekly_stats():
         "topUrls": [{"shortId": u.get("shortId"), "clicks": _safe_int(u.get("clickCount", 0))} for u in top_urls],
         "topDomains": [{"domain": d, "count": c} for d, c in domain_counts],
 
-        # ✅ 사용자용 UI(카테고리 카드) 지원
+        # 사용자용 UI(카테고리 카드) 지원
         "categoryCounts": [{"category": k, "count": v} for k, v in category_counts],
 
         # 트래픽 패턴 / 유입 분석
