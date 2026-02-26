@@ -333,6 +333,10 @@ pyrightconfig.json
 *.tfstate
 *.tfstate.*
 
+# .terraform.tfvars
+*.terraform.tfvars
+*.terraform.tfvars.*
+
 # Crash log files
 crash.log
 crash.*.log
@@ -379,5 +383,24 @@ terraform.rc
 # Ignore all local history of files
 .history
 .ionide
+
+# macOS
+.DS_Store
+
+### react ###
+.DS_*
+*.log
+logs
+**/*.backup.*
+**/*.back.*
+
+node_modules
+bower_components
+
+*.sublime*
+
+psd
+thumb
+sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/python,terraform,visualstudiocode,node,git
