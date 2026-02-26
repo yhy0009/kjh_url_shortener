@@ -1,9 +1,9 @@
 terraform {
   cloud {
-    organization = "kjh_url_shortener"
+    organization = "your_organization"
 
     workspaces {
-      name = "kjh_url_shortener"
+      name = "your_workspace"
     }
   }
 
