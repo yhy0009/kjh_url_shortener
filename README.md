@@ -62,15 +62,10 @@ modules/
 * 도메인별 통계
 
 ### 4️⃣ AI 트렌드 분석 (analyze)
-<p align="center">
-  <img src="./images/trend1.png" width="48%" />
-  <img src="./images/trend2.png" width="48%" />
-</p>
+![AI 트렌드 분석 1](./images/trend1.png) ![AI 트렌드 분석 2](./images/trend2.png)
+![AI 트렌드 분석 3](./images/trend3.png)
 
-<p align="center">
-  <img src="./images/trend3.png" width="60%" />
-</p>
-**EventBridge → 1시간마다 analyze Lambda 자동 실행
+* EventBridge → 1시간마다 analyze Lambda 자동 실행
 
 **분석 항목:**
 
@@ -79,11 +74,11 @@ modules/
 * 🔗 인기 URL 도메인 분석
 * 💡 마케팅 인사이트 제안
 
-OpenAI **gpt-4o-mini** 모델 활용
+OpenAI `gpt-4o-mini` 모델 활용
 
-분석 결과는 **trends** 테이블에 저장 후 API로 제공
+분석 결과는 `trends` 테이블에 저장 후 API로 제공
 
-**사용자/관리자 화면 분리 설계**
+** 사용자/관리자 화면 분리 설계 **
 
 | 구분      | 사용자 화면                         | 관리자 화면                                 |
 | ------- | ------------------------------ | -------------------------------------- |
@@ -209,3 +204,58 @@ OpenAI **gpt-4o-mini** 모델 활용
 * 실제 배포 및 도메인 연결
 
 까지 포함한 **End-to-End 클라우드 프로젝트**입니다.
+
+## 🚀 Getting Started
+### 1️⃣ Prerequisites
+
+* Terraform >= 1.5
+* AWS CLI
+* Node.js 18+
+* AWS 계정
+* OpenAI API Key
+---
+### 2️⃣ AWS 인증 설정
+```Bash
+aws configure
+```
+---
+### 3️⃣ Infrastructure 배포 (Terraform)
+```Bash
+cd Terraform
+terraform init
+terraform apply
+```
+필요 시 `terraform.tfvars` 설정:
+```hcl
+openai_api_key = "yout_api_key"
+frontend_domain = "short.yourdomain.com"
+root_domain = "yourdomain.com"
+BASE_URL = "https://s.yourdomain.com"
+```
+4️⃣ Frontend 실행 (로컬)
+```Bash
+cd frontend
+npm install
+npm run dev
+```
+`.env.local` 설정:
+```env
+NEXT_PUBLIC_API_BASE=https://your-api-id.execute-api.ap-northeast-2.amazonaws.com
+```
+---
+
+5️⃣ 리소스 삭제
+```Bash
+terraform destroy
+```
+---
+📌 실행 순서 요약
+```Bash
+aws configure
+cd Terraform
+terraform init
+terraform apply
+cd frontend
+npm install
+npm run dev
+```
