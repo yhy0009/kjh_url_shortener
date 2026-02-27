@@ -70,7 +70,7 @@ modules/
 <p align="center">
   <img src="./images/trend3.png" width="60%" />
 </p>
-* EventBridge → 1시간마다 analyze Lambda 자동 실행
+**EventBridge → 1시간마다 analyze Lambda 자동 실행
 
 **분석 항목:**
 
