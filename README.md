@@ -62,8 +62,14 @@ modules/
 * 도메인별 통계
 
 ### 4️⃣ AI 트렌드 분석 (analyze)
-![AI 트렌드 분석 1](./images/trend1.png) ![AI 트렌드 분석 2](./images/trend2.png)
-![AI 트렌드 분석 3](./images/trend3.png)
+<p align="center">
+  <img src="./images/trend1.png" width="48%" />
+  <img src="./images/trend2.png" width="48%" />
+</p>
+
+<p align="center">
+  <img src="./images/trend3.png" width="60%" />
+</p>
 * EventBridge → 1시간마다 analyze Lambda 자동 실행
 
 **분석 항목:**
